@@ -1,339 +1,274 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Objection: Brentwood, Glen Rise | Technical Analysis</title>
+    <title>Technical Objection | Brentwood Glen Rise</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root {
-            --charcoal: #2F353B;
-            --safety-yellow: #FFD700;
-            --alert-red: #B22222;
-            --blueprint-white: #F4F7F6;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        
         body {
-            background-color: var(--blueprint-white);
-            color: var(--charcoal);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfdfe;
+            color: #1e293b;
         }
 
-        .silo-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 4px solid var(--charcoal);
+        .report-sheet {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
         }
 
-        .silo-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-left: 4px solid var(--safety-yellow);
+        .highlight-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
         }
 
-        .warning-bg {
-            background: repeating-linear-gradient(
-                45deg,
-                #FFD700,
-                #FFD700 10px,
-                #2F353B 10px,
-                #2F353B 20px
-            );
-            height: 8px;
+        .diagram-crop {
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             width: 100%;
         }
 
-        .critical-badge {
-            background-color: var(--alert-red);
-            color: white;
+        .focus-ring {
+            position: absolute;
+            border: 4px solid #ef4444;
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .active-focus .focus-ring {
+            opacity: 1;
+        }
+
+        .stat-badge {
+            display: inline-block;
             padding: 2px 8px;
             border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .matrix-container {
-            overflow-x: auto;
-        }
-
-        .grid-bg {
-            background-image: linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        .sticky-nav {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: rgba(47, 53, 59, 0.95);
-            backdrop-filter: blur(8px);
-        }
+        .matrix-table th { background: #1e293b; color: white; padding: 12px; }
+        .matrix-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 0.875rem; }
     </style>
 </head>
-<body>
+<body class="antialiased">
 
-    <!-- Sticky Navigation -->
-    <nav class="sticky-nav text-white py-4 px-6 shadow-xl">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="font-bold text-lg tracking-tighter">
-                <span class="text-yellow-400">GLEN RISE</span> OBJECTION
+    <!-- Global Navigation -->
+    <nav class="fixed top-0 w-full z-[100] bg-white/80 backdrop-blur-md border-bottom border-slate-200 h-16 flex items-center px-8 justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white">
+                <i class="fas fa-exclamation-triangle"></i>
             </div>
-            <div class="hidden md:flex space-x-6 text-sm font-medium">
-                <a href="#hero" class="hover:text-yellow-400 transition">Overview</a>
-                <a href="#matrix" class="hover:text-yellow-400 transition">Evidence Matrix</a>
-                <a href="#conflicts" class="hover:text-yellow-400 transition">Silo Conflicts</a>
-                <a href="#modelling" class="hover:text-yellow-400 transition">Modelling Failures</a>
-            </div>
-            <div class="text-xs font-mono bg-red-800 px-2 py-1 rounded">APP: 26/00322/VAC</div>
+            <span class="font-bold text-slate-900 tracking-tight uppercase text-sm">Objection Portal: 26/00322/VAC</span>
+        </div>
+        <div class="flex gap-6 text-xs font-bold uppercase text-slate-500">
+            <a href="#full-report" class="hover:text-red-600">Full Report</a>
+            <a href="#main-schematic" class="hover:text-red-600">Schematic</a>
+            <a href="#analysis" class="hover:text-red-600">Detailed Analysis</a>
         </div>
     </nav>
 
-    <!-- Section 1: Hero -->
-    <section id="hero" class="relative min-h-[70vh] flex items-center bg-[#2F353B] text-white py-20 px-6 overflow-hidden">
-        <div class="absolute inset-0 opacity-10 grid-bg"></div>
-        <div class="max-w-5xl mx-auto relative z-10">
-            <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
-                A Narrative of <span class="text-yellow-400">Siloed Failure</span>: Objection to Brentwood, Glen Rise
-            </h1>
-            <p class="text-xl text-gray-300 mb-8 max-w-3xl leading-relaxed">
-                This formal objection refutes Planning Applications 26/00322/VAC, 24/01264/OUT, and 25/01757/REM. 
-                The proposal relies on a technical narrative that fails to account for how physical site constraints—specifically a 
-                <strong>5-6m vertical fall</strong>, <strong>cohesive clay soils</strong>, and <strong>unverified infilled ground</strong>—intersect to create substantial risk.
-            </p>
-            <div class="flex flex-wrap gap-4">
-                <a href="#matrix" class="bg-yellow-400 text-charcoal px-8 py-3 font-bold rounded hover:bg-yellow-300 transition">Explore Evidence Matrix</a>
-                <div class="border border-gray-500 px-6 py-3 rounded flex items-center gap-3">
-                    <i class="fas fa-exclamation-triangle text-red-500"></i>
-                    <span class="text-sm font-mono">Borehole WS04: Physically Untested</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Warning Bar -->
-    <div class="warning-bg"></div>
-
-    <!-- Section 2: The Evidence Matrix -->
-    <section id="matrix" class="py-20 px-6 bg-white">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-12">
-                <h2 class="text-3xl font-bold mb-2 uppercase tracking-tighter">The Evidence Matrix</h2>
-                <div class="h-1 w-20 bg-red-600 mb-4"></div>
-                <p class="text-gray-600">Statutory & Regulatory Failures mapped to material reality.</p>
+    <main class="pt-24 pb-20 max-w-6xl mx-auto px-4">
+        
+        <!-- PART 1: FULL REPORT REPRODUCTION -->
+        <section id="full-report" class="mb-32">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Formal Planning Objection</h1>
+                <p class="text-slate-500 text-lg">Brentwood, Glen Rise | Planning Application Audit 2024</p>
             </div>
 
-            <div class="matrix-container shadow-2xl rounded-lg overflow-hidden border border-gray-200">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-100 text-xs font-bold uppercase text-gray-700 border-b border-gray-200">
-                        <tr>
-                            <th class="p-4">Materiality</th>
-                            <th class="p-4">Evidence Location</th>
-                            <th class="p-4">Discrepancy Description</th>
-                            <th class="p-4">Statutory Basis</th>
-                            <th class="p-4">Precedent</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm">
-                        <tr class="border-b hover:bg-gray-50 transition">
-                            <td class="p-4"><span class="critical-badge">CRITICAL</span></td>
-                            <td class="p-4 font-mono text-xs">Doc 1469798, p. 13</td>
-                            <td class="p-4"><strong>Unverified Contamination Risk:</strong> Officer recommends discharge despite report admitting access was "not available" to the infilled pond. Conclusion based on absence of data.</td>
-                            <td class="p-4">NPPF Para. 189-190; EPA 1990</td>
-                            <td class="p-4 italic">R v North Lincolnshire Council [2003]</td>
-                        </tr>
-                        <tr class="border-b hover:bg-gray-50 transition">
-                            <td class="p-4"><span class="critical-badge">CRITICAL</span></td>
-                            <td class="p-4 font-mono text-xs">Doc 1469798, p. 6</td>
-                            <td class="p-4"><strong>Topographical Misrepresentation:</strong> Reports confirm a 5-6m vertical fall. Visual models treat the site as a flat plane.</td>
-                            <td class="p-4">Town and Country Planning Order 2015</td>
-                            <td class="p-4 italic">Steeples v Derbyshire CC [1985]</td>
-                        </tr>
-                        <tr class="border-b hover:bg-gray-50 transition">
-                            <td class="p-4 font-bold text-red-800">SIGNIFICANT</td>
-                            <td class="p-4 font-mono text-xs">Doc 1467732</td>
-                            <td class="p-4"><strong>Hydraulic/Stability Conflict:</strong> Drainage attenuation proposed where flood depths of 0.30m-1.00m exist. Impact of 11.85m vehicles on unstable zone unmodelled.</td>
-                            <td class="p-4">Building Regs 2010 (Part H); NPPF Para 173</td>
-                            <td class="p-4 italic">The Wagon Mound (No. 2) [1967]</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-4 font-bold text-red-800">SIGNIFICANT</td>
-                            <td class="p-4 font-mono text-xs">Doc 1469798, p. 23</td>
-                            <td class="p-4"><strong>Access Infeasibility:</strong> Vehicle tracking uses 2D flat-plane simulation. Fails to account for 5-6m slope affecting center of gravity for refuse vehicle.</td>
-                            <td class="p-4">Highways Act 1980; Manual for Streets</td>
-                            <td class="p-4 italic">R v Resilient Energy Severndale Ltd [2019]</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 3: Visual & Technical Conflict -->
-    <section id="conflicts" class="py-20 px-6 bg-gray-50 border-t border-gray-200">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row gap-12 items-center mb-20">
-                <div class="md:w-1/2">
-                    <h2 class="text-3xl font-bold mb-6 uppercase">Visual & Technical <br><span class="text-red-700">Conflict Analysis</span></h2>
-                    <p class="text-gray-700 leading-relaxed mb-4">
-                        The applicant’s visual submissions serve as an aesthetic "silo" that contradicts their own engineering data. 
-                        <strong>Slope Suppression</strong> and <strong>Hydraulic Invisibility</strong> are used to sanitize the site’s reality.
+            <div class="report-sheet p-8 md:p-16 rounded-2xl">
+                <div class="prose prose-slate max-w-none">
+                    <h2 class="text-2xl font-bold border-b pb-4 mb-6">Executive Summary</h2>
+                    <p class="text-lg leading-relaxed mb-8">
+                        This assessment serves as a formal objection to the proposed variation and discharge of conditions at Brentwood, Glen Rise. The application relies on a "siloed" technical narrative that fails to account for how physical site constraints—specifically a <strong>5-6m vertical fall</strong>, <strong>cohesive clay soils</strong>, and <strong>unverified infilled ground</strong>—intersect to create substantial risk. 
                     </p>
-                    <div class="space-y-4">
-                        <div class="p-4 bg-white border shadow-sm rounded flex gap-4 items-start">
-                            <i class="fas fa-mountain text-charcoal pt-1"></i>
-                            <div>
-                                <h4 class="font-bold">Slope Suppression</h4>
-                                <p class="text-sm text-gray-600">Visual Sheets 4 and 5 render the road as a horizontal plane despite a confirmed 5-6m fall.</p>
-                            </div>
-                        </div>
-                        <div class="p-4 bg-white border shadow-sm rounded flex gap-4 items-start">
-                            <i class="fas fa-water text-blue-600 pt-1"></i>
-                            <div>
-                                <h4 class="font-bold">Hydraulic Invisibility</h4>
-                                <p class="text-sm text-gray-600">Visual Sheet 4 shows manicured lawns where Document 1469798 identifies a 1.00m flood depth risk.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="md:w-1/2 bg-[#2F353B] p-8 rounded-xl shadow-2xl">
-                    <div class="text-yellow-400 font-mono text-xs mb-4 uppercase tracking-widest">Systemic Integrity Note</div>
-                    <div class="text-white text-lg italic leading-relaxed border-l-2 border-yellow-400 pl-6">
-                        "Individual technical solutions (for access, drainage, and contamination) conflict when applied to the single physical site."
-                    </div>
-                    <div class="mt-8 flex justify-center">
-                        <div class="w-full h-40 border border-dashed border-gray-500 rounded flex items-center justify-center text-gray-500 text-xs text-center px-6">
-                            [Interactive Cross-Discipline Collision Detection: Topography vs. Access vs. Drainage]
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Silo Cards -->
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="silo-card p-8 bg-white rounded shadow-sm">
-                    <div class="w-12 h-12 bg-gray-100 rounded flex items-center justify-center mb-6">
-                        <i class="fas fa-flask text-charcoal"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-4 text-charcoal">Geo-Environmental</h3>
-                    <p class="text-sm text-gray-600 mb-4">Admits borehole WS04 (targeting the infilled pond) was relocated due to vegetation, leaving the ground quality technically unverified.</p>
-                    <div class="text-xs font-bold text-red-700">DISCREPANT SOURCE: 1469798</div>
-                </div>
-
-                <div class="silo-card p-8 bg-white rounded shadow-sm">
-                    <div class="w-12 h-12 bg-gray-100 rounded flex items-center justify-center mb-6">
-                        <i class="fas fa-truck-moving text-charcoal"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-4 text-charcoal">Transport</h3>
-                    <p class="text-sm text-gray-600 mb-4">Assumes a stable, level surface for heavy vehicles. Fails to account for 1:15 gradients impacting braking and center of gravity.</p>
-                    <div class="text-xs font-bold text-red-700">DISCREPANT SOURCE: 1467732</div>
-                </div>
-
-                <div class="silo-card p-8 bg-white rounded shadow-sm">
-                    <div class="w-12 h-12 bg-gray-100 rounded flex items-center justify-center mb-6">
-                        <i class="fas fa-faucet text-charcoal"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-4 text-charcoal">Drainage</h3>
-                    <p class="text-sm text-gray-600 mb-4">Places large-scale attenuation in the high-risk flood zone on top of unverified infilled land with low infiltration cohesion.</p>
-                    <div class="text-xs font-bold text-red-700">DISCREPANT SOURCE: 1467738</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 4: Modelling Failure -->
-    <section id="modelling" class="py-20 px-6 bg-white overflow-hidden">
-        <div class="max-w-7xl mx-auto">
-            <div class="bg-charcoal p-1 rounded-lg">
-                <div class="bg-[#2F353B] text-white p-8 md:p-16 rounded-lg relative">
-                    <div class="absolute top-0 right-0 p-8 opacity-10">
-                        <i class="fas fa-microchip text-9xl"></i>
-                    </div>
                     
-                    <h2 class="text-3xl md:text-4xl font-bold mb-8 uppercase tracking-tighter">
-                        The <span class="text-red-500">Modelling Failure</span>: Garbage In, Garbage Out
-                    </h2>
-                    
-                    <div class="grid md:grid-cols-2 gap-12">
-                        <div>
-                            <div class="space-y-8">
-                                <div class="border-b border-gray-700 pb-6">
-                                    <h4 class="text-yellow-400 font-bold mb-2">The "Flat Earth" Assumption</h4>
-                                    <p class="text-gray-300 text-sm leading-relaxed">Unless the engineer manually inputs the 5-6m vertical fall into a 3D Digital Terrain Model, the software shows a "Pass" for vehicles that would ground out in reality.</p>
-                                </div>
-                                <div class="border-b border-gray-700 pb-6">
-                                    <h4 class="text-yellow-400 font-bold mb-2">Data Omission (Infilled Pond)</h4>
-                                    <p class="text-gray-300 text-sm leading-relaxed">The software is modelling "virgin soil" where "unstable fill" actually exists because borehole WS04 data was never captured.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-black/20 p-6 rounded border border-gray-700">
-                            <h3 class="text-xl font-bold mb-4 text-red-500">Modelling Conclusion</h3>
-                            <p class="text-gray-300 text-sm leading-relaxed mb-6">
-                                The probability of a modelling failure is nearly certain. The body of work functions as three discrete simulations of an <strong>imaginary flat site</strong>, rather than one unified simulation of the <strong>actual sloped, infilled reality</strong> of Glen Rise.
-                            </p>
-                            <div class="bg-red-900/50 p-4 border border-red-700 text-xs font-mono rounded">
-                                <span class="text-red-300">Status:</span> WEDNESBURY UNREASONABLE
-                            </div>
-                        </div>
+                    <p class="text-lg leading-relaxed mb-8">
+                        Critically, the recommendation by the Contaminated Land Officer to discharge Condition 3 is based on a fundamental investigative failure: the applicant's own consultant admits in <strong>Document 1469798 (p. 13)</strong> that <strong>borehole WS04</strong>, specifically intended to target a potentially contaminated infilled pond, was relocated due to "very dense vegetation" and therefore the ground in that specific area remains physically untested.
+                    </p>
+
+                    <h3 class="text-xl font-bold mb-4">The Evidence Matrix: Statutory & Regulatory Failures</h3>
+                    <div class="overflow-x-auto mb-12">
+                        <table class="w-full matrix-table">
+                            <thead>
+                                <tr>
+                                    <th>Materiality</th>
+                                    <th>Evidence Location</th>
+                                    <th>Discrepancy Description</th>
+                                    <th>Statutory Basis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="stat-badge bg-red-100 text-red-700">CRITICAL</span></td>
+                                    <td>Doc 1469798, p. 13</td>
+                                    <td>Unverified Contamination Risk: Access "not available" to infilled pond.</td>
+                                    <td>NPPF Para 189-190</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="stat-badge bg-orange-100 text-orange-700">HIGH</span></td>
+                                    <td>Visual Sheets 1-3</td>
+                                    <td>Geometric Misrepresentation: 2D tracking on 3D slope.</td>
+                                    <td>NPPF Para 114</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="stat-badge bg-blue-100 text-blue-700">HIGH</span></td>
+                                    <td>Flood Risk Map 1.1</td>
+                                    <td>Drainage Infeasibility: 0.3m-1.0m flood risk area used for infiltration.</td>
+                                    <td>Building Regs Part H</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-4">Conclusion of Audit</h3>
+                    <p class="text-lg leading-relaxed italic text-slate-600 bg-slate-50 p-6 rounded-lg border-l-4 border-slate-300">
+                        "The probability of a modelling failure is nearly certain because the individual 'Pass' results in the Transport and Drainage reports rely on idealized conditions that the Geo-Environmental report proves do not exist."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PART 2: THE MAIN SCHEMATIC -->
+        <section id="main-schematic" class="mb-32">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="h-px flex-1 bg-slate-200"></div>
+                <h2 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Technical Discrepancy Schematic</h2>
+                <div class="h-px flex-1 bg-slate-200"></div>
+            </div>
+            
+            <div class="bg-white p-4 rounded-3xl shadow-2xl border border-slate-200">
+                <img 
+                    src="Copy of Copy of Technical Document Discrepancy Analysis.png" 
+                    alt="Technical Discrepancy Analysis"
+                    class="w-full rounded-2xl"
+                    onerror="this.src='https://placehold.co/1200x800/f8fafc/cbd5e1?text=Technical+Schematic+Primary+View'"
+                >
+            </div>
+            <p class="text-center mt-6 text-slate-400 text-sm font-medium italic">Figure 1.0: Site Integration Conflict Correlation Schematic</p>
+        </section>
+
+        <!-- PART 3: SECTION-BY-SECTION ANALYSIS WITH CROP -->
+        <section id="analysis" class="space-y-24">
+            <div class="text-center mb-16">
+                <span class="text-red-600 font-black uppercase tracking-widest text-xs">Sectional Breakdown</span>
+                <h2 class="text-4xl font-extrabold text-slate-900 mt-2">Critical Conflict Analysis</h2>
+            </div>
+
+            <!-- Analysis Section 1 -->
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-xs">01</span>
+                        <h3 class="text-2xl font-bold text-slate-900">The Investigative Void</h3>
+                    </div>
+                    <p class="text-slate-600 text-lg leading-relaxed">
+                        The recommendation by the Contaminated Land Officer fails on the basis of <strong>Data Omission</strong>. Because the Ground Investigation admitted to relocating borehole WS04 due to vegetation, the "Made Ground" data for the infilled pond was likely never entered into the structural or drainage models.
+                    </p>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4">
+                        <p class="text-sm font-bold text-red-800 uppercase mb-1">Impact:</p>
+                        <p class="text-sm text-red-700">The software is modelling "virgin soil" where "unstable fill" actually exists.</p>
+                    </div>
+                </div>
+                <div class="highlight-container aspect-[4/3] active-focus">
+                    <img src="Copy of Copy of Technical Document Discrepancy Analysis.png" class="diagram-crop" style="transform: scale(2.5) translate(20%, -15%)" onerror="this.parentElement.style.background='#fee2e2'">
+                    <div class="focus-ring" style="width: 120px; height: 120px; top: 40%; left: 60%;"></div>
+                </div>
+            </div>
+
+            <!-- Analysis Section 2 -->
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="highlight-container aspect-[4/3] order-2 lg:order-1 active-focus">
+                    <img src="Copy of Copy of Technical Document Discrepancy Analysis.png" class="diagram-crop" style="transform: scale(2) translate(-15%, 20%)" onerror="this.parentElement.style.background='#fef3c7'">
+                    <div class="focus-ring" style="width: 150px; height: 150px; top: 60%; left: 40%;"></div>
+                </div>
+                <div class="space-y-6 order-1 lg:order-2">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-xs">02</span>
+                        <h3 class="text-2xl font-bold text-slate-900">The "Flat Earth" Assumption</h3>
+                    </div>
+                    <p class="text-slate-600 text-lg leading-relaxed">
+                        Vehicle tracking and drainage software defaulting to a flat plane. Unless the engineer manually inputs the <strong>5-6m vertical fall</strong> into a 3D Digital Terrain Model (DTM), the software will show a "Pass" for a refuse vehicle that would struggle with the gradient and turning radius.
+                    </p>
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4">
+                        <p class="text-sm font-bold text-amber-800 uppercase mb-1">Safety Risk:</p>
+                        <p class="text-sm text-amber-700">Chassis pitch and braking failure not simulated for 11.85m Refuse Vehicle on 1:15 slope.</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-100 py-12 px-6 border-t border-gray-200">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
+            <!-- Analysis Section 3 -->
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-xs">03</span>
+                        <h3 class="text-2xl font-bold text-slate-900">Hydrostatic Head Neglect</h3>
+                    </div>
+                    <p class="text-slate-600 text-lg leading-relaxed">
+                        The drainage model likely calculates how much rain falls on the site, but fails to account for the pressure of water moving down a 5-6m slope through cohesive clay. This pressure can lead to "piping" or slope instability.
+                    </p>
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4">
+                        <p class="text-sm font-bold text-blue-800 uppercase mb-1">Hydraulic Conflict:</p>
+                        <p class="text-sm text-blue-700">Intersection of Drainage Attenuation Tank and Identified Flood Depth zone (0.3m - 1.0m).</p>
+                    </div>
+                </div>
+                <div class="highlight-container aspect-[4/3] active-focus">
+                    <img src="Copy of Copy of Technical Document Discrepancy Analysis.png" class="diagram-crop" style="transform: scale(2.2) translate(10%, 10%)" onerror="this.parentElement.style.background='#dbeafe'">
+                    <div class="focus-ring" style="width: 140px; height: 140px; top: 45%; left: 55%;"></div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-white py-20 px-8">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
             <div class="max-w-md">
-                <div class="font-black text-2xl tracking-tighter text-charcoal mb-4">GLEN RISE OBJECTION</div>
-                <p class="text-sm text-gray-500">
-                    This assessment interrogates the technical discrepancies and unfeasibilities of the Brentwood development. It serves as a formal objection to the Local Authority.
-                </p>
+                <h4 class="text-xl font-bold mb-2">Technical Objection Archive</h4>
+                <p class="text-slate-400 text-sm italic">"The body of work functions as three discrete, disparate and successful simulations of an imaginary flat site, rather than one unified simulation of the actual sloped, infilled reality of Glen Rise."</p>
             </div>
-            <div class="space-y-2">
-                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest">Case References</div>
-                <ul class="text-sm font-mono text-gray-600">
-                    <li>26/00322/VAC</li>
-                    <li>24/01264/OUT</li>
-                    <li>25/01757/REM</li>
-                </ul>
-            </div>
-            <div class="text-right">
-                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Technical Status</div>
-                <div class="flex items-center gap-2 text-red-700 font-bold text-sm">
-                    <span class="w-2 h-2 bg-red-700 rounded-full animate-pulse"></span>
-                    SYSTEMIC INTEGRITY CONFLICT
-                </div>
+            <div class="flex gap-4">
+                <button class="bg-red-600 px-6 py-3 rounded-lg font-bold hover:bg-red-700 transition">Download Evidence Pack</button>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-gray-200 text-center text-xs text-gray-400 uppercase tracking-widest">
-            © 2026 Formal Objection Taskforce - Brentwood, Glen Rise Analysis
+        <div class="max-w-6xl mx-auto mt-20 pt-10 border-t border-slate-800 text-xs text-slate-500 flex justify-between">
+            <span>© 2024 Planning Objection Portal</span>
+            <span>Reference: Brentwood / Glen Rise / Flood-Water Objection</span>
         </div>
     </footer>
 
     <script>
-        // Simple scroll animation observer
-        const observerOptions = {
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('opacity-100', 'translate-y-0');
-                    entry.target.classList.remove('opacity-0', 'translate-y-10');
-                }
+        // Smooth zoom effect on hover for diagram crops
+        document.querySelectorAll('.highlight-container').forEach(container => {
+            container.addEventListener('mousemove', (e) => {
+                const img = container.querySelector('.diagram-crop');
+                const rect = container.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                
+                img.style.transformOrigin = `${x * 100}% ${y * 100}%`;
+                // Keep the zoom but allow subtle movement
+                const currentTransform = img.style.transform.split(' ')[0]; // Gets scale(...)
+                img.style.transform = `${currentTransform} scale(1.1)`;
             });
-        }, observerOptions);
 
-        document.querySelectorAll('.silo-card').forEach(card => {
-            card.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
-            observer.observe(card);
+            container.addEventListener('mouseleave', (e) => {
+                const img = container.querySelector('.diagram-crop');
+                img.style.transform = img.style.transform.split(' ')[0]; // Resets to original scale
+            });
         });
     </script>
 </body>
